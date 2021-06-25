@@ -1,0 +1,250 @@
+Avi 18.206.200.202  ubuntu  Twright@243
+
+Day 1
+Be root user for all the practicals in the training
+sudo su -
+
+Documents of training
+https://github.com/lerndevops/DocKube-IBM
+
+
+Installation commands on Ubuntu
+
+	1  git clone https://github.com/lerndevops/DocKube-IBM.git
+    2  cd DocKube-IBM/Docker/Labs/
+    3  ls
+    4  cd install/
+    5  ls -l
+    6  ./installDocker.sh
+    7  cd
+    8  clear
+    9  cd /var/lib/docker
+   10  ls -l
+   11  service docker status
+   12  docker version
+   13  cd
+   14  history
+   25  docker pull tomcat:8
+   30  docker pull leaddevops/petclinic
+   31  clear
+   32  docker images
+   33  docker pull alpine
+   34  docker pull nginx
+   
+   18  docker run -d nginx
+   19  docker ps
+   20  clear
+   21  netstat -anp |grep 80
+   22  clear
+   23  docker ps
+   24  docker inspect 8e354f236618
+   25  curl 172.17.0.2:80
+   26  clear
+   27  docker run -d -p 1234:80 nginx
+   28  docker ps
+   29  netstat -anp|grep 1234
+   30  docker run -d -p 1234:80 nginx
+   31  docker run -d -p 1235:80 nginx
+   32  docker run
+   33  docker ps
+   34  docker run -d -p 2222:8080 tomcat
+   35  docker ps
+   36  clear
+   37  docker run -d -P nginx
+   6  docker pull ubuntu:16.04
+   57  docker rm -f `docker ps -aq`
+   58  docker run -it ubuntu:16.04
+
+ apt-get update
+apt-get install -y vim nginx 
+cd /var/www/html
+vi index*
+ctrl+pq
+
+--remove containers
+
+docker rm -f `docker ps -aq `
+
+   59  docker ps
+  
+   66  docker commit -m "Tutorial" -c 'CMD /usr/sbin/nginx -g "daemon off;"' -c 'EXPOSE 80'  f30b21c11aea avinginx:v1
+   67  docker images
+   68  docker run -d -p 8769:80 ravinginx:v2
+   Run container
+   
+   docker run -d nginx ##-- -d stands for detached mode ##
+   docker ps -a
+   cntrl + p + q is the best way to come out of the container
+   
+   Day 2 of the training
+   
+   user 5  54.226.157.88   ubuntu  Twright@243
+   user 5  54.210.9.125    ubuntu  Twright@243
+   
+   
+    93  kubectl run pod2 --image httpd --dry-run=client -o yaml
+   94  kubectl run pod2 --image httpd --dry-run=client -o json
+   
+   
+   123  kubectl delete pods --all
+  124  kubectl run test --image nginx --labels='env=prod,type=app,own=avi'
+  125  kubectl run test --image nginx --labels='env=prod,type=app,own=avi' --dry-run=client -o yaml
+  126  clear
+  127  kubectl get pods -l env=prod
+  128  kubectl get pods --show-labels
+  129  kubectl explain pod
+  130  clear
+  131  kubectl explain pod.metadata
+  132  kubectl explain pod.metadata.labels
+  133  clear
+  134  kubectl run apppod --image nginx --env='DBHOST=www.devdb.com'
+  135  kubectl run prodpod --image nginx --env='DBHOST=www.proddb.com'
+  136  kubectl get pods
+  137  kubectl exec -it apppod -- bash
+  138  kubectl exec -it prodpod -- bash
+  139  kubectl run prodpod --image nginx --env='DBHOST=www.proddb.com' --dry-run=client -o yaml
+  140  clear
+  141  kubectl run abcdpod --image nginx  --requests='cpu=0.5,memory=200Mi' --limits='cpu=1,memory=300Mi' --dry-run=client -o yaml
+  142  lscpu
+  
+  apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    app: aviapp
+  name: pod1
+spec:
+  containers:
+  - image: leaddevops/petclinic
+    name: pod1
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+157  kubectl run app --image leaddevops/petclinic --labels='app=pet'
+  158  kubectl run app --image leaddevops/petclinic --labels='app=pet' --dry-run=client -o yaml
+  159  kubectl expose pod app --name appsvc --port 2345 --target-port 8080 --type NodePort
+  160  kubectl expose pod app --name appsvc --port 2345 --target-port 8080 --type NodePort --dry-run=client -o yaml
+  161  vi svc.yml
+  162  kubectl delete svc appsvc
+  163  kubectl create -f svc.yml
+  164  kubectl get svc
+  
+  
+  Day 3
+  
+  user 5	3.86.145.184	ubuntu	Twright@243
+user 5	3.94.10.249	ubuntu	Twright@243
+
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: sampleapp
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: sample
+        image: lerndevops/samplepyapp:v1
+        ports:
+         - containerPort: 3000
+
+
+
+
+  188  kubectl run pod1 --image lerndevops/samplepyapp:v1 --labels='tier=frontend'
+  189  kubectl get pods
+  190  vi rs.yml
+  191  kubectl create -f rs.yml
+  192  kubectl get rs,pods
+  193  kubectl delete pod pod1
+  194  kubectl get rs,pods
+  195  kubectl scale rs frontend --replicas 5
+  196  kubectl get rs,pods
+  197  kubectl scale rs frontend --replicas 1
+  198  kubectl get rs,pods
+  199  clear		 
+  
+  
+  202  kubectl scale rs frontend --replicas 3
+  203  kubectl get pods -o wide
+  204  clear
+  205  kubectl expose rs frontend --name rssvc --port 1234 --target-port 3000 --type NodePort --dry-run=client -o yaml
+  206  kubectl expose rs frontend --name rssvc --port 1234 --target-port 3000 --type NodePort
+  207  clear
+  208  kubectl get svc
+  209  kubectl get pods
+  210  curl 10.107.216.9:1234
+  211  a
+  212  clear
+  213  kubectl get pods
+  214  kubectl get pods -o wide
+  215  kubectl describe svc rssvc
+  216  kubectl scale rs frontend --replicas 5
+  217  kubectl describe svc rssvc
+  218  clear
+  219  kubectl get svc
+  220  clear
+  221  kubectl scale rs frontend --replicas 1
+  222  kubectl scale rs frontend --replicas 2
+  223  kubectl scale rs frontend --replicas 4
+
+
+-------- NODE: while true;do curl 10.100.208.113:32081;sleep 1;echo "";done
+
+----------------------------ReplicaSet
+
+229  kubectl create -f https://raw.githubusercontent.com/lerndevops/DocKube-IBM/master/Kube/controllers/deploy-example3
+  230  kubectl get deploy,svc,pods
+  231  clear
+  232  kubectl set image deploy kubeserve app=leaddevops/kubeserve:v2
+  233  kubectl rollout status deploy kubeserve
+  234  kubectl rollout history  deploy kubeserve
+  235  kubectl set image deploy kubeserve app=leaddevops/kubeserve:v3
+  236  clear
+  237  kubectl rollout undo deploy kubeserve --to-revision=1
+  238  kubectl get rs -o wide
+
+
+
+kubectl delete all --all
+
+
+243  kubectl create deploy ravi --image nginx
+  244  kubectl scale deploy ravi --replicas 3
+  245  kubectl get all
+  246  kubectl create deploy ravi --image nginx --dry-run=client -o yaml
+		 
+		 -----Namespaces
+		 
+		 258  kubectl get ns
+  259  kubectl get all -n kube-system
+  260  clear
+  261  kubectl delete all --all
+  262  kubectl get pods
+  263  kubectl create ns rashi
+  264  kubectl run pod1 --image nginx -n rashi
+  265  kubectl get pods
+  266  kubectl get pods -n rashi
+  
+  
+  -----------------Storage
+  
+  270  kubectl create -f https://raw.githubusercontent.com/lerndevops/DocKube-IBM/master/Kube/storage/vol-emptyDir-ex2.yml
+  271  kubectl get pods
+  272  kubectl exec -it myvolumes-pod -c myvolumes-container-1 -- bash
+  273  kubectl exec -it myvolumes-pod -c myvolumes-container-2 -- bash
+  274  kubectl exec -it myvolumes-pod -c myvolumes-container-3 -- bash	
